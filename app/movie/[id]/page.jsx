@@ -1,19 +1,17 @@
 import MovieContainer from '@/containers/movie'
-import movies from "@/mocks/movies.json"
 import { notFound } from "next/navigation"
-import { resolve } from 'styled-jsx/css'
+import {getMovie} from '@/services/movie';
 
-async function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
+
+
+
 
 const MoviePage = async ({ params, searchParams }) => {
-
-    await delay(2000)
     const { id } = params
-    const selectedMovie = movies.results.find(movie => movie.id.toString() === id)
+    const movie = await getMovie(id)
+    // const selectedMovie = movies.results.find(movie => movie.id.toString() === id)
 
-    if (!selectedMovie) {
+    if (!movie) {
         notFound()
     }
 
@@ -22,7 +20,7 @@ const MoviePage = async ({ params, searchParams }) => {
     }
 
     return (
-        <MovieContainer movie={selectedMovie} />
+        <MovieContainer movie={movie} />
     )
 }
 

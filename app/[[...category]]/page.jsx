@@ -1,23 +1,34 @@
-import Movies from '@/mocks/movies.json'
 import HomeContainer from '@/containers/home'
-async function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-}
+import {
+    getTopRatedMovies,
+    getPopularMovies,
+    getCategories,
+    getSingleCategory
+} from '@/services/movie';
 
 
 const HomePage = async ({ params }) => {
-    await delay(2000)
+
     let selectedCategroy;
 
+    const [{ results: topRatedMovies }, { results: popularMovies }, { genres: categories }] =
+        await Promise.all([getTopRatedMovies(), getPopularMovies(), getCategories()])
+
+
     if (params.category?.length > 0) {
-        selectedCategroy = true
+        const { results } = await getSingleCategory(params.category[0])
+        selectedCategroy = results
     }
     return (
         <>
-            <HomeContainer selectedCategory={{
-                id: params.category?.[0] || "",
-                movies: selectedCategroy ? Movies.results.slice(0, 7) : []
-            }} />
+            <HomeContainer
+                popularMovies={popularMovies}
+                topRatedMovies={topRatedMovies}
+                categories={categories}
+                selectedCategory={{
+                    id: params.category?.[0] || "",
+                    movies: selectedCategroy ? selectedCategroy.slice(0, 7) : []
+                }} />
         </>
     )
 }
