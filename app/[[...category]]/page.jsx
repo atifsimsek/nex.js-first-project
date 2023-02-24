@@ -11,12 +11,15 @@ const HomePage = async ({ params }) => {
 
     let selectedCategroy;
 
+    console.log(params)
+  
+
     const [{ results: topRatedMovies }, { results: popularMovies }, { genres: categories }] =
         await Promise.all([getTopRatedMovies(), getPopularMovies(), getCategories()])
 
 
     if (params.category?.length > 0) {
-        const { results } = await getSingleCategory(params.category[0])
+        const { results } = await getSingleCategory(params.category[0] )
         selectedCategroy = results
     }
     return (
